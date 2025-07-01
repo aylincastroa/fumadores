@@ -4,20 +4,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Configuración general
-st.set_page_config(page_title="Dashboard Psicológico", layout="wide")
+st.set_page_config(page_title="Dashboard Psicológico por Género", layout="wide")
 st.title("📊 Dashboard Psicológico por Género")
 st.markdown("Este panel muestra gráficas divididas por género sobre variables psicológicas y hábitos.")
 
-# Carga directa del CSV que está en la misma carpeta del repositorio
+# Cargar datos directamente desde el archivo local
 try:
     df = pd.read_csv("📊 Dashboard Psicológico por Género.csv", encoding="utf-8")
     st.success("✅ Datos cargados correctamente desde el archivo local.")
-except FileNotFoundError:
-    st.error("❌ No se encontró el archivo '📊 Dashboard Psicológico por Género.csv'. Verifica que esté en la misma carpeta.")
-except Exception as e:
-    st.error(f"❌ Error al cargar el archivo: {e}")
-
-
+    
     # Diccionarios para decodificar variables
     genero_dict = {1: 'Hombre', 2: 'Mujer'}
     fumador_dict = {0: 'No Fuma', 1: 'Fuma'}
@@ -32,7 +27,7 @@ except Exception as e:
     df['Frecuencia de depresión'] = df['Frecuencia de depresión'].map(depresion_dict)
     df['Dificultades de adaptación'] = df['Dificultades de adaptación'].map(adaptacion_dict)
 
-    # Descripción en la barra lateral
+    # Descripción en barra lateral
     with st.sidebar:
         st.header("📘 Descripciones de Variables")
         st.markdown("""
@@ -41,8 +36,6 @@ except Exception as e:
         - **Frecuencia de depresión**: 0 = Nunca; 1 = Diario o semanal; 2 = Mensualmente o algunas veces  
         - **Dificultades de adaptación**: 0 = Sin dificultades; 1 = Con dificultades
         """)
-        st.markdown("Selecciona la variable a analizar:")
-
         variable = st.radio(
             "Variable a visualizar:",
             ['Fumadores', 'Frecuencia de ansiedad', 'Frecuencia de depresión', 'Dificultades de adaptación']
@@ -52,7 +45,6 @@ except Exception as e:
     def graficar_variable(variable, titulo):
         plt.figure(figsize=(8,5))
         colores = ['#FFC0CB', '#FFB6C1', '#FF69B4', '#FF1493', '#DB7093']  # Tonos rosados
-
         ax = sns.countplot(data=df, x=variable, hue='Genero', palette=colores)
         plt.title(titulo, fontsize=16)
         plt.xlabel(variable)
@@ -61,8 +53,10 @@ except Exception as e:
         st.pyplot(plt.gcf())
         plt.clf()
 
-    # Mostrar la gráfica seleccionada
+    # Mostrar gráfica seleccionada
     graficar_variable(variable, f"{variable} por Género")
 
-else:
-    st.warning("Por favor, sube un archivo CSV con las columnas especificadas.")
+except FileNotFoundError:
+    st.error("❌ No se encontró el archivo '📊 Dashboard Psicológico por Género.csv'. Verifica que esté en la misma carpeta.")
+except Exception as e:
+    st.error(f"❌ Error al cargar el archivo: {e}")
