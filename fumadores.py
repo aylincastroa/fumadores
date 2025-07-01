@@ -8,10 +8,15 @@ st.set_page_config(page_title="Dashboard Psicológico", layout="wide")
 st.title("📊 Dashboard Psicológico por Género")
 st.markdown("Este panel muestra gráficas divididas por género sobre variables psicológicas y hábitos.")
 
-# Carga de datos
-uploaded_file = st.file_uploader("Carga tu archivo CSV", type="csv")
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+# Carga directa del CSV que está en la misma carpeta del repositorio
+try:
+    df = pd.read_csv("📊 Dashboard Psicológico por Género.csv", encoding="utf-8")
+    st.success("✅ Datos cargados correctamente desde el archivo local.")
+except FileNotFoundError:
+    st.error("❌ No se encontró el archivo '📊 Dashboard Psicológico por Género.csv'. Verifica que esté en la misma carpeta.")
+except Exception as e:
+    st.error(f"❌ Error al cargar el archivo: {e}")
+
 
     # Diccionarios para decodificar variables
     genero_dict = {1: 'Hombre', 2: 'Mujer'}
